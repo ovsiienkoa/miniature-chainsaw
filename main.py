@@ -4,6 +4,7 @@ from case import Case
 
 files = os.listdir("data")
 for file in files:
+    print(file)
     case = Case(path_to_file=os.path.join("data", file),
                 first_date = '2024-06-01',
                 eval_size = 0.1,
