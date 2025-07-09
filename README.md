@@ -1,7 +1,12 @@
 # miniature-chainsaw
 
-example for csv files:
+Use-case:
+* write down a list of items whose price in a week you are interested in 'parse_list.json'
+* run parse_steam.py
+* run main.py
+* get the results :D
 
+
+example for csv files (context):
 days_on_market,date,price,number_sold
-
 0,2022-01-21,10.675,76680
