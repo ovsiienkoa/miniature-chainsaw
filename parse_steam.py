@@ -1,9 +1,6 @@
 import pandas as pd
-import numpy as np
-from bs4 import BeautifulSoup
 import re
 import json
-import random
 import os
 import time
 import requests
@@ -53,13 +50,14 @@ def parse_pricing(page) -> pd.DataFrame:
     print('Successfully parsed pricing data')
     return ent_df
 
-with open('parse_list.json', 'r', encoding='utf-8') as f:
-    parse_list = json.load(f)
+if __name__ == '__main__':
+    with open('parse_list.json', 'r', encoding='utf-8') as f:
+        parse_list = json.load(f)
 
-parse_links = [f'{url_head}/{x}' for x in parse_list]
-
-for name, parse_link in zip(parse_list, parse_links):
-    print(name)
-    page = fetch_page(parse_link)
-    df = parse_pricing(page)
-    df.to_csv(f"data/{name}.csv", index_label = 'days_on_market')
+    parse_links = [f'{url_head}/{x}' for x in parse_list]
+    os.mkdir('data')
+    for name, parse_link in zip(parse_list, parse_links):
+        print(name)
+        page = fetch_page(parse_link)
+        df = parse_pricing(page)
+        df.to_csv(f"data/{name}.csv", index_label = 'days_on_market')

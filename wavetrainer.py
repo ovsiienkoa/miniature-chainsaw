@@ -189,7 +189,7 @@ class WaveNN:
 
         return root_mean_squared_error(test, pred), r2_score(test, pred)
 
-    def predict(self, X):
+    def predict(self, X) -> np.array:
 
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(device)
