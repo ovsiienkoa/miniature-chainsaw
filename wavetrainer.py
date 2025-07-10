@@ -25,6 +25,8 @@ class TorchDS(torch.utils.data.Dataset):
 
 class WaveNN:
     def __init__(self):
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        print(f"Using device: {device}")
         self.model = None
         self.n_features = None
         self.context_size = None
@@ -118,46 +120,49 @@ class WaveNN:
               epochs:int,
               verbose:int = 0,  #0 - nothing happens; 1 - eval for optuna; 2 - eval, params, tensorboard etc
               verbose_update_freq:int = 10,
-              experiment:bool = True):
+              experiment:bool = True,
+              distill_loops:int = 0):
 
-        train_dict = case.sample('train')
-        X_train, y_train = train_dict['features'], train_dict['targets']
-
-        eval_dict = case.sample('eval')
-        X_eval, y_eval = eval_dict['features'], eval_dict['targets']
-
-        if not experiment:
-            train_dict = case.sample('full')
-            X_train, y_train = train_dict['features'], train_dict['targets']
-
-        self.n_features = case.n_features
+        distill_loops = distill_loops+1
         self.context_size = case.context_size
-
-        torch_ds = TorchDS(np.array(X_train), np.array(y_train))
-        eval_ds = TorchDS(np.array(X_eval), np.array(y_eval))
-
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        print(f"Using device: {device}")
 
         batch_size = 64
 
-        dataloader = torch.utils.data.DataLoader(torch_ds, batch_size = batch_size, drop_last = False, shuffle = False)
+        train_dict = case.sample('train')
+
+        self.n_features = case.n_features #after .sample because case.n_features is reinitialized during .sample
+        if not experiment:
+            train_dict = case.sample('full')
+
+        eval_dict = case.sample('eval')
+        X_eval, y_eval = eval_dict['features'], eval_dict['targets']
+        eval_ds = TorchDS(np.array(X_eval), np.array(y_eval))
         eval_dataloader = torch.utils.data.DataLoader(eval_ds, batch_size = len(eval_ds), drop_last = False, shuffle = False)
 
-        self._train_architecture(train_dataloader = dataloader,
-                                         eval_dataloader = eval_dataloader,
-                                         input_length= case.context_size,
-                                         output_length= case.predict_days_size,
-                                         n_blocks = 1,
-                                         verbose = verbose,
-                                         verbose_update_freq = verbose_update_freq,
-                                         learning_rate = 0.002,
-                                         weight_decay = 3e-4,
-                                         max_grad_norm = 1,
-                                         n_epochs = epochs,
-                                         model_name = case.case_name
-                                         )
+        X_train = train_dict['features']
 
+        for i in range(distill_loops):
+            if i == 0:
+                y_train = train_dict['targets']
+            else:
+                y_train = self.predict(np.array(X_train))
+
+            torch_ds = TorchDS(np.array(X_train), np.array(y_train))
+            dataloader = torch.utils.data.DataLoader(torch_ds, batch_size = batch_size, drop_last = False, shuffle = False)
+
+            self._train_architecture(train_dataloader = dataloader,
+                                             eval_dataloader = eval_dataloader,
+                                             input_length= case.context_size,
+                                             output_length= case.predict_days_size,
+                                             n_blocks = 1,
+                                             verbose = verbose,
+                                             verbose_update_freq = verbose_update_freq,
+                                             learning_rate = 0.002,
+                                             weight_decay = 3e-4,
+                                             max_grad_norm = 1,
+                                             n_epochs = epochs,
+                                             model_name = case.case_name
+                                             )
 
     def evaluate(self, X_test = None, y_test= None, case_sample = None, plot:bool = False):
 

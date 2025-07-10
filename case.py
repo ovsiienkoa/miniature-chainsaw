@@ -20,8 +20,7 @@ class Case:
                  reward_target:bool = False):
 
         self.reward_target = reward_target
-        self.n_features = 18
-        self.n_l_features = 8
+        self.n_features = None
         self.case_name = case_name
 
         self.target_columns = ['price']
@@ -169,20 +168,20 @@ class Case:
         :param df:
         :return context_dataframe, target_dataframe[only columns, that model gonna predict]:
         """
-
+        df = df.copy()
         X, y, actual_prices = [], [], []
         #adding rolling features
         if self.reward_target:
             df = self.reward_mode(df)
 
-        df = self.rolling_min_max(df)
+        #df = self.rolling_min_max(df)
         df.fillna(0, inplace=True)
         #splitting into series
         features, targets = self._split_into_series(df)
         for feature, target in zip(features, targets):
 
             #adding local series min/max
-            feature = self.distance_to_max_min(feature)
+            #feature = self.distance_to_max_min(feature) #normalizing in model later:(
 
             #adding rotation for date
             feature = self.transform_dates(feature)
@@ -196,6 +195,7 @@ class Case:
                 actual_prices.append(actual_price.to_numpy())
 
             target = target[self.target_columns]
+            self.n_features = len(feature.columns)
             X.append(feature.to_numpy())
             y.append(target.to_numpy())
 
@@ -219,8 +219,8 @@ class Case:
     def get_last_record(self):
         df = self.df.copy()
         df = df.iloc[-self.context_size:]
-        df = self.rolling_min_max(df)
+        #df = self.rolling_min_max(df)
         df.fillna(0, inplace=True)
-        df = self.distance_to_max_min(df)
+        #df = self.distance_to_max_min(df)
         df = self.transform_dates(df)
         return df.to_numpy()
