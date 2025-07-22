@@ -55,9 +55,15 @@ if __name__ == '__main__':
         parse_list = json.load(f)
 
     parse_links = [f'{url_head}/{x}' for x in parse_list]
-    os.mkdir('data')
+
+    try:
+        os.mkdir("data")
+    except:
+        pass
+
     for name, parse_link in zip(parse_list, parse_links):
         print(name)
         page = fetch_page(parse_link)
         df = parse_pricing(page)
-        df.to_csv(f"data/{name}.csv", index_label = 'days_on_market')
+        #df.to_csv(f"data/{name}.csv", index_label = 'days_on_market')
+        df.to_csv(f"data/{name}.csv", index=False)

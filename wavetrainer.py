@@ -158,7 +158,7 @@ class WaveNN:
                                              verbose = verbose,
                                              verbose_update_freq = verbose_update_freq,
                                              learning_rate = 0.002,
-                                             weight_decay = 3e-4,
+                                             weight_decay = 3e-5,#3e-4?
                                              max_grad_norm = 1,
                                              n_epochs = epochs,
                                              model_name = case.case_name
@@ -186,7 +186,7 @@ class WaveNN:
                 week_lag = np.concatenate((np.ones(7) * np.mean(test[:7]), test[:-7]))
                 plt.plot(week_lag)
             #running_mean = np.mean(np.array(X_test)[:,:,0], 1)
-
+            plt.grid()
             plt.plot(test)
             plt.plot(pred)
 

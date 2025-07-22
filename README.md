@@ -8,5 +8,5 @@ Use-case:
 
 
 example for csv files (context):
-days_on_market,date,price,number_sold
-0,2022-01-21,10.675,76680
+date,price,number_sold
+2022-01-21,10.675,76680

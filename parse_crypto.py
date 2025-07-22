@@ -18,4 +18,4 @@ if __name__ == '__main__':
     df.rename(columns={'volume': 'number_sold'}, inplace=True)
     df = df[['date', 'price', 'number_sold']]
 
-    df.to_csv("data/bitcon.csv", index=False)
+    df.to_csv("data/BTC.csv", index=False)

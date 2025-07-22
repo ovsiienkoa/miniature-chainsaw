@@ -25,7 +25,7 @@ class Case:
 
         self.target_columns = ['price']
 
-        self.df = pd.read_csv(path_to_file).set_index('date').drop(columns = ['days_on_market'])
+        self.df = pd.read_csv(path_to_file).set_index('date')#.drop(columns = ['days_on_market'])
 
         self.df.index = pd.to_datetime(self.df.index)
         self.df['price'].astype('float')
