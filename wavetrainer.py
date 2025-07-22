@@ -30,6 +30,7 @@ class WaveNN:
         self.model = None
         self.n_features = None
         self.context_size = None
+        self.n_blocks = 1
 
     def _train_architecture(self,
                             model_name:str,
@@ -154,7 +155,7 @@ class WaveNN:
                                              eval_dataloader = eval_dataloader,
                                              input_length= case.context_size,
                                              output_length= case.predict_days_size,
-                                             n_blocks = 1,
+                                             n_blocks = self.n_blocks,
                                              verbose = verbose,
                                              verbose_update_freq = verbose_update_freq,
                                              learning_rate = 0.002,
