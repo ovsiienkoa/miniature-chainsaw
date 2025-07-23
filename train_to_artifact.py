@@ -32,10 +32,10 @@ for file in files:
                     )
 
         model = WaveNN()
-        model.train(case = case, epochs = 3, verbose = 0, experiment= True, distill_loops = 0)#200?
+        model.train(case = case, epochs = 500, verbose = 0, experiment= True, distill_loops = 0)#200?
         rmse, r2 = model.evaluate(case_sample=case.sample('eval'), plot = True)
         print('rmse', rmse, 'r2', r2, 'delay', delay)
-        #model.train(case = case, epochs = 5, verbose = 0, experiment = False, distill_loops = 0)#200?
+        model.train(case = case, epochs = 500, verbose = 0, experiment = False, distill_loops = 0)#200?
         cfg_dict = {
             "input_length": case.context_size,
             "output_length": case.predict_days_size,
