@@ -1,6 +1,9 @@
 # miniature-chainsaw
 
-Use-case:
+It's main purpose is to serve a project (end-to-end), that runs model on Vertex AI powers. The project is: 'Predicting price for (crypto/skins on steam)' **wow, how creative**
+Link (in the weirdest possible scenario the service will be alive up to 22.09.25):
+
+Alt. use-case:
 * write down a list of items whose price in a week you are interested in 'parse_list.json'
 * run parse_steam.py
 * run main.py
