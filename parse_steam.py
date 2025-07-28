@@ -11,6 +11,17 @@ PARSE_ERROR_TIME_DELAY = 60
 parse_time_out_string = r"You've made too many requests recently. Please wait and try your request again later."
 url_head = 'https://steamcommunity.com/market/listings/730/'
 
+def parse_steam_directly(name:str, days:int = None):
+    parse_link = f'{url_head}/{name}'
+    page = fetch_page(parse_link)
+    df = parse_pricing(page)
+    df = df[['date', 'price', 'number_sold']]
+
+    if days is not None:
+        df = df[-days:]
+
+    return df
+
 def fetch_page(url):
     r = requests.get(url)
     page = r.content.decode('utf8')
@@ -61,9 +72,8 @@ if __name__ == '__main__':
     except:
         pass
 
-    for name, parse_link in zip(parse_list, parse_links):
-        print(name)
-        page = fetch_page(parse_link)
-        df = parse_pricing(page)
-        #df.to_csv(f"data/{name}.csv", index_label = 'days_on_market')
+    for name in parse_list:
+        df = parse_steam_directly(name)
+        name = name.replace(" ", "_")
+        name = name.replace("&", "_")
         df.to_csv(f"data/{name}.csv", index=False)
