@@ -3,6 +3,7 @@ from google.cloud.aiplatform import Endpoint
 
 import json
 from parse_crypto import parse_crypto_directly
+from parse_steam import parse_steam_directly
 from case import Case
 
 
@@ -11,11 +12,20 @@ with open("train_to_artifact.json", "r") as f:
 
 def prediction(entity, days):
     if entity == "BTC":
-        data = Case.transform_dates(parse_crypto_directly(days = 32))
-        data.drop(columns = ['date'], inplace = True)
-        data = data.values.tolist()
+        data = parse_crypto_directly(days = 32)
+
+    if entity == "CS | Dreams & Nightmares Case":
+        entity = entity[5:]
+        data = parse_steam_directly(name = entity, days = 32)
+
+    data = Case.transform_dates(data)
+    data.drop(columns = ['date'], inplace = True)
+    data = data.values.tolist()
 
     endpoint = Endpoint(endpoint_name = f"projects/{cfg["PROJECT"]}/locations/europe-west9/endpoints/{cfg["ENDPOINT"]}")
+
+    entity = entity.replace(" ", "_")
+    entity = entity.replace("&", "_")
 
     request = [{"entity":entity, "days": int(days), "data": data}]
     result = endpoint.predict(instances = request)
@@ -24,9 +34,9 @@ def prediction(entity, days):
 
 demo = gr.Interface(
     prediction,
-    [gr.Radio(["BTC"], label="entity"),
+    [gr.Radio(["BTC", "CS | Dreams & Nightmares Case"], label="entity"),
     gr.Slider(1, 5, value=1, label="Days to predict", step=1)],
     "text"
 )
 
-demo.launch(share = True)
+demo.launch()
