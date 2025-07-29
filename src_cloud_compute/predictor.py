@@ -55,12 +55,11 @@ class TsPredictor(Predictor):
             prediction = []
 
             for day in range(days_to_predict):
-
+                input_tensor = torch.clone(data)
                 model = self._models[f"{model_type}_{day+1}"]
-                data = data.to(self.torch_device)
                 model.eval()
                 with torch.no_grad():
-                    output = model(data)
+                    output = model(input_tensor)
                 #postprocess
                 output = torch.squeeze(output.to(torch.device("cpu"))).numpy()
                 prediction.append(output.tolist())

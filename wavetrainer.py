@@ -1,5 +1,5 @@
 from waveformer import WaveFormer, initialize_weights
-from case import Case
+from gradio_app.case import Case
 
 import matplotlib.pyplot as plt
 from torch.utils.tensorboard import SummaryWriter

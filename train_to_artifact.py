@@ -2,7 +2,7 @@ import json
 import os
 import torch
 from wavetrainer import WaveNN
-from case import Case
+from gradio_app.case import Case
 
 from google.cloud import storage
 
@@ -10,7 +10,7 @@ files = os.listdir("data")
 
 delays = [1, 2, 3, 4, 5]
 
-with open("train_to_artifact.json", "r") as f:
+with open("gradio_app/train_to_artifact.json", "r") as f:
     cfg = json.load(f)
 
 

@@ -1,7 +1,7 @@
 import os
 import json
 from wavetrainer import WaveNN
-from case import Case
+from gradio_app.case import Case
 
 files = os.listdir("data")
 if not os.path.exists("predictions"):

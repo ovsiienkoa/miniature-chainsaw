@@ -3,7 +3,7 @@ from google.cloud import aiplatform
 
 from src_cloud_compute.predictor import TsPredictor
 
-with open("train_to_artifact.json", "r") as f:
+with open("gradio_app/train_to_artifact.json", "r") as f:
     cfg = json.load(f)
 
 BUCKET_NAME = cfg["BUCKET_NAME"]

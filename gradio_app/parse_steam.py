@@ -62,7 +62,7 @@ def parse_pricing(page) -> pd.DataFrame:
     return ent_df
 
 if __name__ == '__main__':
-    with open('parse_list.json', 'r', encoding='utf-8') as f:
+    with open('../parse_list.json', 'r', encoding='utf-8') as f:
         parse_list = json.load(f)
 
     parse_links = [f'{url_head}/{x}' for x in parse_list]
